@@ -1,0 +1,1079 @@
+{
+	"info": {
+		"_postman_id": "468e15f6-f646-4f68-99eb-4bd0192c6d93",
+		"name": "FakeStoreApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39235569"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get all products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==200){\r",
+									"    pm.test(\"Successfully Get all products\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/products",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a new Product",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Dynamic variable generation\r",
+									"\r",
+									"var title_s=pm.variables.replaceIn(\"{{$randomNoun}}\" )\r",
+									"pm.environment.set(\"title_env\",title_s)\r",
+									"console.log(title_s)\r",
+									"\r",
+									"var price_s=pm.variables.replaceIn(\"{{$randomPrice}}\" )\r",
+									"pm.environment.set(\"price_env\",price_s)\r",
+									"console.log(price_s)\r",
+									"\r",
+									"var description_s=pm.variables.replaceIn(\"{{$randomLoremSentence}}\" )\r",
+									"pm.environment.set(\"des_env\",description_s)\r",
+									"console.log(description_s)\r",
+									"\r",
+									"var catagory_s=pm.variables.replaceIn(\"{{$randomNoun}}\" )\r",
+									"pm.environment.set(\"cat_env\",catagory_s)\r",
+									"console.log(catagory_s)\r",
+									"\r",
+									"var image_s=pm.variables.replaceIn(\"{{$randomImageUrl}}\" )\r",
+									"pm.environment.set(\"image_env\",image_s)\r",
+									"console.log(image_s)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json()\r",
+									"pm.environment.set(\"uid\",jsonData.id)\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==201){\r",
+									"    pm.test(\"Successfully created new product\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\": \"{{title_env}}\",\r\n\"price\": {{price_env}},\r\n\"description\": \"{{des_env}}\",\r\n\"category\": \"{{cat_env}}\",\r\n\"image\": \"{{image_env}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/products",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var Statuscode = pm.response.code;\r",
+									"var responseBody; // Initialize variable for response body\r",
+									"\r",
+									"try {\r",
+									"    responseBody = pm.response.json(); // Try parsing response as JSON\r",
+									"} catch (e) {\r",
+									"    responseBody = null; // If parsing fails, set responseBody to null\r",
+									"}\r",
+									"\r",
+									"var envId = pm.environment.get(\"uid\"); // Fetch the 'id' from the environment\r",
+									"\r",
+									"if (Statuscode === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(200);\r",
+									"    });\r",
+									"    pm.test(\"Successful request\");\r",
+									"    \r",
+									"    if (!envId) {\r",
+									"        pm.test(\"Dynamic Environment variable 'id' is missing\", function () {\r",
+									"            pm.expect(envId).to.not.be.undefined;\r",
+									"        });\r",
+									"    } else if (responseBody.id >= 1 && responseBody.id <= 20) {\r",
+									"        pm.test(\"Response body is successfully displayed for valid ID\", function () {\r",
+									"            pm.expect(responseBody.id).to.be.within(1, 20);\r",
+									"        })\r",
+									"    }\r",
+									"} else if (Statuscode === 404) {\r",
+									"    pm.test(\"Status code is 404\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(404);\r",
+									"    });\r",
+									"    pm.test(\"Data Not Found\");\r",
+									"} else if (Statuscode === 500) {\r",
+									"    pm.test(\"Status code is 500\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(500);\r",
+									"    });\r",
+									"    pm.test(\"Internal Server Error\");\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200, 404, or 500\", function () {\r",
+									"        pm.expect(Statuscode).to.be.oneOf([200, 404, 500]);\r",
+									"    });\r",
+									"    pm.test(\"Something went Wrong\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/products/2",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"products",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==200){\r",
+									"    pm.test(\"Successfully updated product\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Dynamic variable generation\r",
+									"\r",
+									"var title_s=pm.variables.replaceIn(\"{{$randomNoun}}\" )\r",
+									"pm.environment.set(\"title_env_1\",title_s)\r",
+									"console.log(title_s)\r",
+									"\r",
+									"var price_s=pm.variables.replaceIn(\"{{$randomPrice}}\" )\r",
+									"pm.environment.set(\"price_env_1\",price_s)\r",
+									"console.log(price_s)\r",
+									"\r",
+									"var description_s=pm.variables.replaceIn(\"{{$randomLoremSentence}}\" )\r",
+									"pm.environment.set(\"des_env_1\",description_s)\r",
+									"console.log(description_s)\r",
+									"\r",
+									"var catagory_s=pm.variables.replaceIn(\"{{$randomNoun}}\" )\r",
+									"pm.environment.set(\"cat_env_1\",catagory_s)\r",
+									"console.log(catagory_s)\r",
+									"\r",
+									"var image_s=pm.variables.replaceIn(\"{{$randomImageUrl}}\" )\r",
+									"pm.environment.set(\"image_env_1\",image_s)\r",
+									"console.log(image_s)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"title\": \"{{title_env_1}}\",\r\n        \"price\":{{price_env_1}},\r\n        \"description\": \"{{des_env_1}}\",\r\n        \"category\": \"{{cat_env_1}}\",\r\n        \"image\": \"{{image_env_1}}\",\r\n        \"rating\": {\r\n            \"rate\": 3.6,\r\n            \"count\": 145\r\n        }\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/products/{{uid}}",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"products",
+								"{{uid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.unset('title_env')\r",
+									"pm.environment.unset('title_env_1')\r",
+									"pm.environment.unset('price_env')\r",
+									"pm.environment.unset('price_env_1')\r",
+									"pm.environment.unset('des_env')\r",
+									"pm.environment.unset('des_env_1')\r",
+									"pm.environment.unset('uid')\r",
+									"pm.environment.unset('cat_env')\r",
+									"pm.environment.unset('cat_env_1')\r",
+									"pm.environment.unset('image_env')\r",
+									"pm.environment.unset('image_env_1')\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/products/{{uid}}",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"products",
+								"{{uid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "Get all cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==200){\r",
+									"    pm.test(\"Successfully Get all carts\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/carts",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"carts"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET 'https://fakestoreapi.com/carts'"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Dynamic variable generation\r",
+									"var jsonData = pm.response.json()\r",
+									"pm.environment.set(\"uid_1\",jsonData.id)\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var user_s=pm.variables.replaceIn(\"{{$randomInt}}\" )\r",
+									"pm.environment.set(\"user_env\",user_s)\r",
+									"console.log(user_s)\r",
+									"\r",
+									"var pid_s=pm.variables.replaceIn(\"{{$randomInt}}\" )\r",
+									"pm.environment.set(\"pid_env\",pid_s)\r",
+									"console.log(pid_s)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userId\": {{user_env}}, \r\n\"products\": [\r\n    {\r\n        \"id\": {{pid_env}}\r\n    \r\n    }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/carts",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"carts"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST 'https://fakestoreapi.com/carts' -H 'Content-Type: application/json' -d '{\"userId\": 1, \"products\": [{\"id\": 1}]}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var Statuscode = pm.response.code;\r",
+									"var responseBody; // Initialize variable for response body\r",
+									"\r",
+									"try {\r",
+									"    responseBody = pm.response.json(); // Try parsing response as JSON\r",
+									"} catch (e) {\r",
+									"    responseBody = null; // If parsing fails, set responseBody to null\r",
+									"}\r",
+									"\r",
+									"var envId = pm.environment.get(\"uid\"); // Fetch the 'id' from the environment\r",
+									"\r",
+									"if (Statuscode === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(200);\r",
+									"    });\r",
+									"    pm.test(\"Successful request\");\r",
+									"    \r",
+									"    if (!envId) {\r",
+									"        pm.test(\"Dynamic Environment variable 'id' is missing\", function () {\r",
+									"            pm.expect(envId).to.not.be.undefined;\r",
+									"        });\r",
+									"    } else if (responseBody.id >= 1 && responseBody.id <= 20) {\r",
+									"        pm.test(\"Response body is successfully displayed for valid ID\", function () {\r",
+									"            pm.expect(responseBody.id).to.be.within(1, 20);\r",
+									"        })\r",
+									"    }\r",
+									"} else if (Statuscode === 404) {\r",
+									"    pm.test(\"Status code is 404\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(404);\r",
+									"    });\r",
+									"    pm.test(\"Data Not Found\");\r",
+									"} else if (Statuscode === 500) {\r",
+									"    pm.test(\"Status code is 500\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(500);\r",
+									"    });\r",
+									"    pm.test(\"Internal Server Error\");\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200, 404, or 500\", function () {\r",
+									"        pm.expect(Statuscode).to.be.oneOf([200, 404, 500]);\r",
+									"    });\r",
+									"    pm.test(\"Something went Wrong\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/carts/4",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"carts",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==201){\r",
+									"    pm.test(\"Successfully updated cart\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var user_s=pm.variables.replaceIn(\"{{$randomInt}}\" )\r",
+									"pm.environment.set(\"user_env_1\",user_s)\r",
+									"console.log(user_s)\r",
+									"\r",
+									"var pid_s=pm.variables.replaceIn(\"{{$randomInt}}\" )\r",
+									"pm.environment.set(\"pid_env_1\",pid_s)\r",
+									"console.log(pid_s)\r",
+									"\r",
+									"var title_s=pm.variables.replaceIn(\"{{$randomNoun}}\" )\r",
+									"pm.environment.set(\"title_env\",title_s)\r",
+									"console.log(title_s)\r",
+									"\r",
+									"var price_s=pm.variables.replaceIn(\"{{$randomPrice}}\" )\r",
+									"pm.environment.set(\"price_env\",price_s)\r",
+									"console.log(price_s)\r",
+									"\r",
+									"var description_s=pm.variables.replaceIn(\"{{$randomLoremSentence}}\" )\r",
+									"pm.environment.set(\"des_env\",description_s)\r",
+									"console.log(description_s)\r",
+									"\r",
+									"var catagory_s=pm.variables.replaceIn(\"{{$randomNoun}}\" )\r",
+									"pm.environment.set(\"cat_env\",catagory_s)\r",
+									"console.log(catagory_s)\r",
+									"\r",
+									"var image_s=pm.variables.replaceIn(\"{{$randomImageUrl}}\" )\r",
+									"pm.environment.set(\"image_env\",image_s)\r",
+									"console.log(image_s)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userId\": {{user_env_1}},\r\n\"products\": [\r\n{\r\n\"id\": {{pid_env_1}},\r\n\"title\": \"{{title_env}}\",\r\n\"price\": {{price_env}},\r\n\"description\": \"{{des_env}}\",\r\n\"category\": \"{{cat_env}}\",\r\n\"image\": \"{{image_env}}\"\r\n}\r\n]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/carts/{{uid_1}}",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"carts",
+								"{{uid_1}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X PUT 'https://fakestoreapi.com/carts/1' -H 'Content-Type: application/json' -d '{\"userId\": 1, \"products\": [{\"id\": 2}]}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.unset('title_env')\r",
+									"pm.environment.unset('price_env')\r",
+									"pm.environment.unset('des_env')\r",
+									"pm.environment.unset('uid_1')\r",
+									"pm.environment.unset('cat_env')\r",
+									"pm.environment.unset('image_env')\r",
+									"pm.environment.unset('user_env_1')\r",
+									"pm.environment.unset('user_env')\r",
+									"pm.environment.unset('pid_env_1')\r",
+									"pm.environment.unset('pid_env')\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/carts/{{uid_1}}",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"carts",
+								"{{uid_1}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X DELETE 'https://fakestoreapi.com/carts/1'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Get all users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==200){\r",
+									"    pm.test(\"Successfully get all users\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/users",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a new User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var user_name=pm.variables.replaceIn(\"{{$randomFullName}}\" )\r",
+									"pm.environment.set(\"user_env\",user_name)\r",
+									"console.log(user_name)\r",
+									"\r",
+									"var email=pm.variables.replaceIn(\"{{$randomEmail}}\" )\r",
+									"pm.environment.set(\"email_env\",email)\r",
+									"console.log(email)\r",
+									"\r",
+									"var pass=pm.variables.replaceIn(\"{{$randomPassword}}\" )\r",
+									"pm.environment.set(\"pass_env\",pass)\r",
+									"console.log(pass)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Dynamic variable generation\r",
+									"var jsonData = pm.response.json()\r",
+									"pm.environment.set(\"uid_1\",jsonData.id)\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==200){\r",
+									"    pm.test(\"Successfully created a new user\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"{{user_env}}\", \r\n\"email\": \"{{email_env}}\", \r\n\"password\": \"{{pass_env}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/users",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST 'https://fakestoreapi.com/users' -H 'Content-Type: application/json' -d '{\"username\": \"john_doe\", \"email\": \"john@example.com\", \"password\": \"pass123\"}'"
+					},
+					"response": []
+				},
+				{
+					"name": "get a user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var Statuscode = pm.response.code;\r",
+									"var responseBody; // Initialize variable for response body\r",
+									"\r",
+									"try {\r",
+									"    responseBody = pm.response.json(); // Try parsing response as JSON\r",
+									"} catch (e) {\r",
+									"    responseBody = null; // If parsing fails, set responseBody to null\r",
+									"}\r",
+									"\r",
+									"var envId = pm.environment.get(\"uid\"); // Fetch the 'id' from the environment\r",
+									"\r",
+									"if (Statuscode === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(200);\r",
+									"    });\r",
+									"    pm.test(\"Successful request\");\r",
+									"    \r",
+									"    if (!envId) {\r",
+									"        pm.test(\"Dynamic Environment variable 'id' is missing\", function () {\r",
+									"            pm.expect(envId).to.not.be.undefined;\r",
+									"        });\r",
+									"    } else if (responseBody.id >= 1 && responseBody.id <= 20) {\r",
+									"        pm.test(\"Response body is successfully displayed for valid ID\", function () {\r",
+									"            pm.expect(responseBody.id).to.be.within(1, 20);\r",
+									"        })\r",
+									"    }\r",
+									"} else if (Statuscode === 404) {\r",
+									"    pm.test(\"Status code is 404\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(404);\r",
+									"    });\r",
+									"    pm.test(\"Data Not Found\");\r",
+									"} else if (Statuscode === 500) {\r",
+									"    pm.test(\"Status code is 500\", function () {\r",
+									"        pm.expect(Statuscode).to.equal(500);\r",
+									"    });\r",
+									"    pm.test(\"Internal Server Error\");\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200, 404, or 500\", function () {\r",
+									"        pm.expect(Statuscode).to.be.oneOf([200, 404, 500]);\r",
+									"    });\r",
+									"    pm.test(\"Something went Wrong\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/users/1",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET 'https://fakestoreapi.com/users/1'"
+					},
+					"response": []
+				},
+				{
+					"name": "Update a user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var user_name=pm.variables.replaceIn(\"{{$randomFullName}}\" )\r",
+									"pm.environment.set(\"user_env_2\",user_name)\r",
+									"console.log(user_name)\r",
+									"\r",
+									"var email=pm.variables.replaceIn(\"{{$randomEmail}}\" )\r",
+									"pm.environment.set(\"user_email\",email)\r",
+									"console.log(email)\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"{{user_env_2}}\", \"email\": \"{{user_email}}\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/users/{{uid_1}}",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"users",
+								"{{uid_1}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X PUT 'https://fakestoreapi.com/users/1' -H 'Content-Type: application/json' -d '{\"username\": \"john_doe_updated\", \"email\": \"john.updated@example.com\"}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.unset('user_env')\r",
+									"pm.environment.set('user_env_2')\r",
+									"pm.environment.unset('email_env')\r",
+									"pm.environment.unset('pass_env')\r",
+									"pm.environment.unset('uid_1')\r",
+									"pm.environment.unset('user_email')\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{common_url}}/users/{{uid_1}}",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"users",
+								"{{uid_1}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X DELETE 'https://fakestoreapi.com/users/1'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Dynamic variable generation\r",
+									"var jsonData = pm.response.json()\r",
+									"pm.environment.set(\"uid_1\",jsonData.id)\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var Statuscode = pm.response.code;\r",
+									"if(Statuscode==200){\r",
+									"    pm.test(\"Successfully logged In\")\r",
+									"}else if (Statuscode == 404){\r",
+									"    pm.test(\"Data Not Found\")\r",
+									"\r",
+									"}else if (Statuscode == 500){\r",
+									"    pm.test(\"Internal Server Error\") \r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Something went Wrong\")\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"johnd\", \"password\": \"m38rmF$\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{common_url}}/auth/login",
+							"host": [
+								"{{common_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST 'https://fakestoreapi.com/auth/login' -H 'Content-Type: application/json' -d '{\"username\": \"john_doe\", \"password\": \"pass123\"}'"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "common_url",
+			"value": "https://fakestoreapi.com",
+			"type": "string"
+		}
+	]
+}
