@@ -2,7 +2,7 @@
 
 **Project Name: Fake Store API (<https://fakestoreapi.com/> )**
 
-**Test Summary Link: [Click here to view**](https://chatgpt.com/c/67e900ad-f3ac-800c-9c3d-7d3687ed1653)**
+**Test Summary Link: [Click here to view**](https://sites.google.com/view/rahibur-rahman/projects)**
 
 **For further information, feel free to contact me:
 Website: [www.rahiburrahman.com](http://www.rahiburrahman.com/)
