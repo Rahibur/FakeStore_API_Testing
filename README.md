@@ -1,15 +1,15 @@
-﻿**API Testing Report**
+# ﻿**API Testing Report**
+![Image](https://github.com/user-attachments/assets/ef4b506c-c917-48b0-8e86-36946ec50769)
+### Project Name: Fake Store API (<https://fakestoreapi.com/> )
 
-**Project Name: Fake Store API (<https://fakestoreapi.com/> )**
+### Test Summary Link: [Click here to view](https://sites.google.com/view/rahibur-rahman/projects)
 
-**Test Summary Link: [Click here to view**](https://sites.google.com/view/rahibur-rahman/projects)**
-
-**For further information, feel free to contact me:
+### For further information, feel free to contact me:
 Website: [www.rahiburrahman.com](http://www.rahiburrahman.com/)
-LinkedIn: [Rahibur Rahman**](https://www.linkedin.com/in/rahibur-rahman-2158a4241/)**
+LinkedIn: [Rahibur Rahman](https://www.linkedin.com/in/rahibur-rahman-2158a4241/)
 
 -----
-**Overview**
+## **Overview**
 
 Fake Store API is a free online REST API designed to provide pseudo-real data for e-commerce or shopping websites. It is particularly useful for scenarios such as:
 
@@ -21,7 +21,7 @@ Fake Store API is a free online REST API designed to provide pseudo-real data fo
 This versatile tool supports a wide range of e-commerce functionalities and is widely used for learning and testing purposes. As for testing perpous ,I performed comprehensive API testing using Postman.
 
 -----
-Testing Scope
+## Testing Scope
 
 The testing focused on four main resources commonly required in e-commerce prototypes:
 
@@ -33,7 +33,7 @@ The testing focused on four main resources commonly required in e-commerce proto
 Each resource was tested for key CRUD (Create, Read, Update, Delete) operations to ensure the API’s reliability, functionality, and consistency.
 
 -----
-**API Endpoints and Methods**
+## **API Endpoints and Methods**
 
 **1. Products**
 
@@ -110,7 +110,7 @@ The API testing was conducted using:
 - Tool: Postman
 - Report Generation: Newman
 -----
-Test Execution
+## Test Execution
 
 The API endpoints were thoroughly tested to validate the following aspects:
 
@@ -119,7 +119,7 @@ The API endpoints were thoroughly tested to validate the following aspects:
 - Error Handling: Checking the API’s ability to handle incorrect inputs gracefully.
 - Performance: Measuring the response time of the endpoints to ensure efficient operation.
 -----
-Conclusion
+**Conclusion**
 
 The Fake Store API provides a robust platform for developers to simulate and test e-commerce functionalities.  API testing has confirmed the reliability and usability of the provided endpoints, ensuring a seamless experience for users integrating this API into their applications.
 
