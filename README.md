@@ -2,7 +2,7 @@
 ![Image](https://github.com/user-attachments/assets/ef4b506c-c917-48b0-8e86-36946ec50769)
 ### Project Name: Fake Store API (<https://fakestoreapi.com/> )
 
-### Test Summary Link: [Click here to view](https://sites.google.com/view/rahibur-rahman/projects)
+### Test Summary Link: [Click here to view](https://sites.google.com/view/rahibur-rahman/projects/api-testing)
 
 ### For further information, feel free to contact me:
 Website: [www.rahiburrahman.com](http://www.rahiburrahman.com/)
